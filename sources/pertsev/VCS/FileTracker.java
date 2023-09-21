@@ -1,12 +1,20 @@
 package pertsev.VCS;
 
+
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FileTracker {
-    public FileTracker() {}
+    private Path trackedDirectory;
+    public FileTracker(Path trackedDirectory) {
+        this.trackedDirectory = trackedDirectory;
+    }
 
-    public void check(MyFile file) {}
-    public void status(MyFile directory) {}
+    private void check(MyPath file) {}
+    public String status() {
+        return trackedDirectory.toUri().toString();
+    }
+
+    public void setTrackedDirectory(Path trackedDirectory) {
+        this.trackedDirectory = trackedDirectory;
+    }
 }

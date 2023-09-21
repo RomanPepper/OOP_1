@@ -3,9 +3,16 @@ package pertsev.VCS;
 import java.nio.file.Path;
 
 public class FilePatcher {
-    public FilePatcher() {}
+    private Path trackedDirectory;
+    public FilePatcher(Path trackedDirectory) {
+        this.trackedDirectory = trackedDirectory;
+    }
 
-    public void patch(Path file) {
+    public void patch(MyPath file) {
 
+    }
+
+    public void setTrackedDirectory(Path trackedDirectory) {
+        this.trackedDirectory = trackedDirectory;
     }
 }
