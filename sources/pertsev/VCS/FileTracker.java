@@ -9,7 +9,7 @@ public class FileTracker {
         this.trackedDirectory = trackedDirectory;
     }
 
-    private void check(MyPath file) {}
+    private void check(MyFile file) {}
     public String status() {
         return trackedDirectory.toUri().toString();
     }

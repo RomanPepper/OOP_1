@@ -8,7 +8,7 @@ public class FilePatcher {
         this.trackedDirectory = trackedDirectory;
     }
 
-    public void patch(MyPath file) {
+    public void patch(MyFile file) {
 
     }
 

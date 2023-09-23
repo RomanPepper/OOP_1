@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
 
-public class MyPath implements Path {
+public class MyFile implements Path {
     Path file;
     String version;
 
-    public MyPath(Path file) {
+    public MyFile(Path file) {
         this.file = file;
         this.version = "0.1";
     }
 
-    public MyPath(Path file, String version) {
+    public MyFile(Path file, String version) {
         this.file = file;
         this.version = version;
     }
@@ -29,18 +29,18 @@ public class MyPath implements Path {
     }
 
     @Override
-    public MyPath getRoot() {
-        return new MyPath(file.getRoot(), this.version);
+    public MyFile getRoot() {
+        return new MyFile(file.getRoot(), this.version);
     }
 
     @Override
-    public MyPath getFileName() {
-        return new MyPath(file.getFileName(), this.version);
+    public MyFile getFileName() {
+        return new MyFile(file.getFileName(), this.version);
     }
 
     @Override
-    public MyPath getParent() {
-        return new MyPath(file.getParent(), this.version);
+    public MyFile getParent() {
+        return new MyFile(file.getParent(), this.version);
     }
 
     @Override
@@ -49,13 +49,13 @@ public class MyPath implements Path {
     }
 
     @Override
-    public MyPath getName(int index) {
-        return new MyPath(file.getName(index), this.version);
+    public MyFile getName(int index) {
+        return new MyFile(file.getName(index), this.version);
     }
 
     @Override
-    public MyPath subpath(int beginIndex, int endIndex) {
-        return new MyPath(file.subpath(beginIndex, endIndex), this.version);
+    public MyFile subpath(int beginIndex, int endIndex) {
+        return new MyFile(file.subpath(beginIndex, endIndex), this.version);
     }
 
     @Override
@@ -69,18 +69,18 @@ public class MyPath implements Path {
     }
 
     @Override
-    public MyPath normalize() {
-        return new MyPath(file.normalize(), this.version);
+    public MyFile normalize() {
+        return new MyFile(file.normalize(), this.version);
     }
 
     @Override
-    public MyPath resolve(Path other) {
-        return new MyPath(file.resolve(other), this.version);
+    public MyFile resolve(Path other) {
+        return new MyFile(file.resolve(other), this.version);
     }
 
     @Override
-    public MyPath relativize(Path other) {
-        return new MyPath(file.relativize(other), this.version);
+    public MyFile relativize(Path other) {
+        return new MyFile(file.relativize(other), this.version);
     }
 
     @Override
@@ -89,13 +89,13 @@ public class MyPath implements Path {
     }
 
     @Override
-    public MyPath toAbsolutePath() {
-        return new MyPath(file.normalize(), this.version);
+    public MyFile toAbsolutePath() {
+        return new MyFile(file.normalize(), this.version);
     }
 
     @Override
-    public MyPath toRealPath(LinkOption... options) throws IOException {
-        return new MyPath(file.toRealPath(options), this.version);
+    public MyFile toRealPath(LinkOption... options) throws IOException {
+        return new MyFile(file.toRealPath(options), this.version);
     }
 
     @Override
