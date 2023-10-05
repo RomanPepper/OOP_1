@@ -1,10 +1,12 @@
-package pertsev.VCS;
+package pertsev.VCS.ConsoleUtils;
 
 import java.util.Scanner;
 
 public class ConsoleManager {
+    private Scanner scanner = new Scanner(System.in);
+
     public String[] getCommand() {
-        return new Scanner(System.in).nextLine().split("\s");
+        return scanner.nextLine().split("\\s");
     }
 
     public void printResponse(String response) {
