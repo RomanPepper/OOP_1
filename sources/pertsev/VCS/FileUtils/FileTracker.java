@@ -1,8 +1,5 @@
 package pertsev.VCS.FileUtils;
 
-
-import pertsev.VCS.VCSUtils.Repository;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -13,32 +10,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileTracker {
-    private static class MyFileVisitor extends SimpleFileVisitor<Path> {
-        private List<List<String>> diffList = new ArrayList<>();
+    private static class FileTrackerVisitor extends SimpleFileVisitor<Path> {
+        private List<String> diffList = new ArrayList<>();
+
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-
 
 
             return FileVisitResult.CONTINUE;
         }
 
-        public List<List<String>> getDiffList() {
-            return new ArrayList<>(diffList.stream().map(ArrayList::new).toList());
-        }
-
-        public void newDiff(List<String> diff) {
-            this.diffList.add(diff);
+        public List<String> getDiffList() {
+            return new ArrayList<>(diffList);
         }
     }
-    private Repository repository;
-    public FileTracker(Repository repository) {
-        this.repository = repository;
+
+    private Path directory;
+
+    public FileTracker(Path directory) {
+        this.directory = directory;
     }
 
     public String status() throws IOException {
-        MyFileVisitor fileVisitor = new MyFileVisitor();
-        Files.walkFileTree(repository.getRepoPath(), fileVisitor);
+        FileTrackerVisitor fileVisitor = new FileTrackerVisitor();
+        Files.walkFileTree(this.directory, fileVisitor);
         return fileVisitor.getDiffList().toString();
     }
 }

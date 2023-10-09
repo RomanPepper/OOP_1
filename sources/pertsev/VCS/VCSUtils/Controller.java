@@ -1,8 +1,6 @@
 package pertsev.VCS.VCSUtils;
 
 import pertsev.VCS.ControllableVCS;
-import pertsev.VCS.FileUtils.FilePatcher;
-import pertsev.VCS.FileUtils.FileTracker;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,14 +12,10 @@ public class Controller {
     private static final String PROJECT_DIR = System.getProperty("user.dir");
     private static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
     private static final String COMMAND_SEPARATOR = "\n --------------------------------";
-    private FileTracker fileTracker;
-    private FilePatcher filePatcher;
     private Repository repository;
     private ControllableVCS vcs;
 
     public Controller(ControllableVCS vcs, Repository repository) {
-        this.fileTracker = new FileTracker(repository);
-        this.filePatcher = new FilePatcher(repository);
         this.repository = repository;
         this.vcs = vcs;
     }
@@ -32,14 +26,14 @@ public class Controller {
 //                return fileTracker.status() + COMMAND_SEPARATOR;
                 return COMMAND_SEPARATOR;
             case "log":
-                return readLogFile(COMMITS_FILE);
+                return readLogFile();
             default:
                 return '"' + command[0] + '"' + " is not a command";
         }
     }
 
-    private String readLogFile(Path logFile) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new FileReader(logFile.toFile()));
+    private String readLogFile() throws FileNotFoundException {
+        Scanner scanner = new Scanner(new FileReader(COMMITS_FILE.toFile()));
         StringBuilder stringBuilder = new StringBuilder();
 
         while (scanner.hasNextLine()) {
