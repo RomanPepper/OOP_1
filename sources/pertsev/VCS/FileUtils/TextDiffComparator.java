@@ -10,4 +10,9 @@ public class TextDiffComparator implements Comparator<List<String>> {
             System.out.println(i);
         }
     }
+
+    public List<List<String>> getDiffList(){
+
+    }
+
 }
