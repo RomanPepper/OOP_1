@@ -15,6 +15,7 @@ import java.util.List;
 public class FileTracker {
     private static class MyFileVisitor extends SimpleFileVisitor<Path> {
         private List<List<String>> diffList = new ArrayList<>();
+
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 

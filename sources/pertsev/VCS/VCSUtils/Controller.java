@@ -26,8 +26,6 @@ public class Controller {
         this.filePatcher = new FilePatcher(repository);
         this.repository = repository;
         this.vcs = vcs;
-        List<Integer> list = new ArrayList<>();
-        list.forEach(System.out::println);
     }
 
     public String command(String[] command) throws FileNotFoundException {
