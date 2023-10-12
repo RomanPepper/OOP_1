@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileTracker {
+
     private static class FileTrackerVisitor extends SimpleFileVisitor<Path> {
         private List<String> diffList = new ArrayList<>();
 

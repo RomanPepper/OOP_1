@@ -1,24 +1,24 @@
 package pertsev.VCS.VCSUtils;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 
 public class Commit {
-    private final Path commitFile;
+    private static final String PROJECT_DIR = System.getProperty("user.dir");
+    private static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
     private String name;
-    private int hashCode;
+    private Path editedFile;
+    private Map<Integer, String> editedLines;
 
-    public Commit(Path commitFile, String name) {
-        this.commitFile = commitFile;
-
-        //делаем hashCode
-        hashCode = 0;
+    public Commit(String name, Path editedFile,
+                  Map<Integer, String> editedLines) {
+        this.name = name;
+        this.editedFile = editedFile;
+        this.editedLines = editedLines;
     }
 
-    public Path getCommitFile() {
-        return commitFile;
-    }
-
-    public int getHashCode() {
-        return hashCode;
+    public String getName() {
+        return name;
     }
 }
