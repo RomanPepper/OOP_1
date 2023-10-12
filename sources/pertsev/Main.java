@@ -2,8 +2,6 @@ package pertsev;
 
 import pertsev.VCS.VersionControlSystem;
 
-import pertsev.VCS.FileUtils.TextDiffComparator;
-
 import java.io.FileNotFoundException;
 
 public class Main {
