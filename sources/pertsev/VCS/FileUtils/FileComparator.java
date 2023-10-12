@@ -10,11 +10,16 @@ public class FileComparator implements Comparator<List<String>> {
         return 0;
     }
 
-    public String getDiff(List<String> oldFileRows, List<String> newFileRows){
+    public String getDiff(List<String> oldFileRows, List<String> newFileRows) {
 
         for (int i = 0; i < Math.max(oldFileRows.size(), newFileRows.size()); i++) {
 
         }
     }
+
     //1 diff - один стринг = одно сравнение одного файла
+
+    public List<String> getDiffList() {
+
+    }
 }

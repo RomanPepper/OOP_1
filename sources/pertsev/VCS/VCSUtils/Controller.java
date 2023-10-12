@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
@@ -18,6 +20,8 @@ public class Controller {
     public Controller(ControllableVCS vcs, Repository repository) {
         this.repository = repository;
         this.vcs = vcs;
+        List<Integer> list = new ArrayList<>();
+        list.forEach(System.out::println);
     }
 
     public String command(String[] command) throws FileNotFoundException {
