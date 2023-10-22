@@ -16,6 +16,7 @@ public class CommitCollector {
         this.parser = new CommitLogFileParser(commitFile);
     }
 
+    //Собирает текстовое представление указанного файла
     public String collect(String commitName, Path necessaryFile) throws IOException {
         Queue<Commit> commitQueue = parser.readCommitQueue();
         StringBuilder stringBuilder = new StringBuilder();

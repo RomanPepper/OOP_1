@@ -1,6 +1,6 @@
 package pertsev.VCS;
 
-public interface ControllableVCS {
+public interface SelfControllable {
     public void start();
     public void stop();
 }
