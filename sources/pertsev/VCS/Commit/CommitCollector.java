@@ -1,9 +1,6 @@
-package pertsev.VCS.FileUtils;
-
-import pertsev.VCS.VCSUtils.Commit;
+package pertsev.VCS.Commit;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Queue;
 
@@ -23,7 +20,7 @@ public class CommitCollector {
 
         for (Commit commit : commitQueue) {
             stringBuilder.append(commit.getName());
-
+            //... Доделать/Перепроектировать
         }
 
         System.out.println(stringBuilder.toString());

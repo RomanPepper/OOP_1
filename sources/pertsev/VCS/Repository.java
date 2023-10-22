@@ -1,10 +1,9 @@
-package pertsev.VCS.VCSUtils;
+package pertsev.VCS;
 
-import pertsev.VCS.FileUtils.FilePatcher;
-import pertsev.VCS.FileUtils.FileTracker;
+import pertsev.VCS.FileHandlers.FilePatcher;
+import pertsev.VCS.FileHandlers.FileTracker;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Repository {
     private final Path repoPath;

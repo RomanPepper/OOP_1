@@ -1,8 +1,9 @@
-package pertsev.VCS.FileUtils;
+package pertsev.VCS.FileHandlers;
 
 import java.util.Comparator;
 import java.util.List;
 
+//СЮДА НЕ СМОТРИТЕ ВООБЩЕ, ЭТО СТАРЮЧИЙ ОКОЛОРУДИМЕНТ, который я дальше буду рефакторить
 public class FileComparator implements Comparator<List<String>> {
     @Override
     public int compare(List<String> oldFileRows, List<String> newFileRows) {

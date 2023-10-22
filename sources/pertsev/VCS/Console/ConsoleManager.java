@@ -1,4 +1,4 @@
-package pertsev.VCS.ConsoleUtils;
+package pertsev.VCS.Console;
 
 import java.util.Scanner;
 

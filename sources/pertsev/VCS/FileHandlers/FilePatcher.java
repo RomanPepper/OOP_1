@@ -1,4 +1,4 @@
-package pertsev.VCS.FileUtils;
+package pertsev.VCS.FileHandlers;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

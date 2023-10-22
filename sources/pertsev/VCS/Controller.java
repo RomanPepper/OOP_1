@@ -1,6 +1,4 @@
-package pertsev.VCS.VCSUtils;
-
-import pertsev.VCS.SelfControllable;
+package pertsev.VCS;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,9 +13,9 @@ public class Controller {
     private static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
     private static final String COMMAND_SEPARATOR = "\n --------------------------------";
     private Repository repository;
-    private SelfControllable vcs;
+    private Controllable vcs;
 
-    public Controller(SelfControllable vcs, Repository repository) {
+    public Controller(Controllable vcs, Repository repository) {
         this.repository = repository;
         this.vcs = vcs;
         List<Integer> list = new ArrayList<>();

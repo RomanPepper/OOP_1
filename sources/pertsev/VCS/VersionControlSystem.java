@@ -1,14 +1,12 @@
 package pertsev.VCS;
 
-import pertsev.VCS.ConsoleUtils.ConsoleManager;
-import pertsev.VCS.VCSUtils.Controller;
-import pertsev.VCS.VCSUtils.Repository;
+import pertsev.VCS.Console.ConsoleManager;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class VersionControlSystem implements ControllableVCS {
+public class VersionControlSystem implements Controllable {
     private static final String PROJECT_DIR = System.getProperty("user.dir");
     private static final Path DEFAULT_REPOSITORY_DIRECTORY = Paths.get(
             PROJECT_DIR + "/resources");
