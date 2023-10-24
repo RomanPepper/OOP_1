@@ -4,11 +4,10 @@ package pertsev.VCS.Commit;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class CommitLogFileParser {
-    private final String COMMIT_SEPARATOR = "------COMMIT_END------";
-    private final String FILE_CHANGES_SEPARATOR = "---CHANGESET_END---";
     private Path commitLogFile;
 
     public CommitLogFileParser(Path commitLofFile) {
@@ -19,26 +18,44 @@ public class CommitLogFileParser {
         String fileText = Files.readAllLines(commitLogFile).toString();
         Queue<Commit> commits = new LinkedList<>();
 
-        for (String commitText : fileText.split(COMMIT_SEPARATOR)) {
+        for (String commitText : fileText.split(CommitLogConstants.COMMIT_SEPARATOR)) {
             Commit commit;
-            String commitName = Arrays.copyOfRange(commitText.split("\n"), 0, 1)[0].strip();
+            String commitName = Arrays.copyOfRange(commitText.split("\n"), 0, 1)[0].trim();
+            Map<Path, List<Change>> fileChanges = new HashMap<>();
 
             //Массив изменений для каждого файла
-            String[] fileChangesText = commitText.split(FILE_CHANGES_SEPARATOR);
+            String[] changeSetsText = commitText.split(CommitLogConstants.CHANGE_SET_SEPARATOR);
+            for (String changeSetText : changeSetsText) {
+                String[] changeSetLines = changeSetText.split("\n");
 
-            String  = Arrays.copyOfRange(fileChangesText, 0, 1)[0].strip();
+                Path changeSetPath = Paths.get(changeSetLines[0].trim());
+                List<Change> changes = new ArrayList<>();
 
-            boolean isFirstLine = true;
-            //Разбираем каждую строку из описания
-            for (String fileChangeText: fileChangesText) {
-                ChangeSet fileChange;
-                String[] parse
+                for (int i = 1; i < changeSetLines.length; i++) {
+                    Change change;
+                    Change.LineShiftPointer lineShiftPointer;
+                    String portableString;
+
+                    String[] coordinatesAndString = changeSetLines[i].split("\\|");
+
+                    int oldCoordinate = Integer.parseInt(coordinatesAndString[0].split(",")[0]);
+                    int newCoordinate = Integer.parseInt(coordinatesAndString[0].split(",")[1]);
+
+                    lineShiftPointer = new Change.LineShiftPointer(oldCoordinate, newCoordinate);
+                    portableString = coordinatesAndString[1];
+
+                    change = new Change(lineShiftPointer, portableString);
+
+                    changes.add(change);
+                }
+
+                fileChanges.put(changeSetPath, changes);
             }
 
-            Map<Integer, String> editedLines = new HashMap<>();
-            for (int indexLine = 2; i < lines.length; i++) {
-                editedLines.put(i - 2, )
-            }
+            commit = new Commit(commitName, fileChanges);
+            commits.add(commit);
         }
+
+        return commits;
     }
 }

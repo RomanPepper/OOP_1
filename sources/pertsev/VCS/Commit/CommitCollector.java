@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.Queue;
 
 public class CommitCollector {
-    private Path commitFile;
+    private final Path commitFile;
     private CommitLogFileParser parser;
 
     public CommitCollector(Path commitFile) {
@@ -16,14 +16,34 @@ public class CommitCollector {
     //Собирает текстовое представление указанного файла
     public String collect(String commitName, Path necessaryFile) throws IOException {
         Queue<Commit> commitQueue = parser.readCommitQueue();
-        StringBuilder stringBuilder = new StringBuilder();
 
-        for (Commit commit : commitQueue) {
-            stringBuilder.append(commit.getName());
-            //... Доделать/Перепроектировать
+        if (commitQueue.isEmpty()) {
+            return "";
         }
 
-        System.out.println(stringBuilder.toString());
-        return stringBuilder.toString();
+        //Начинаем с первого коммита и до нужного нам (невключительно, последний - обработаем отдельно)
+        Commit commit = commitQueue.poll();
+        String text = "";
+        while (!commit.getName().equals(commitName)) {
+            text = updateFileTextToNextCommit(text, commit, necessaryFile);
+            commit = commitQueue.poll();
+        }
+        //И после того, как дошли до последнего оставшегося коммита (нужного нам), достраиваем текст и по нему тоже
+        text = updateFileTextToNextCommit(text, commit, necessaryFile);
+
+
+        return text;
+    }
+
+    private String updateFileTextToNextCommit(String textToUpdate, Commit nextCommit, Path filePath) {
+        String[] linedText = textToUpdate.split("\n");
+        for (Change change : nextCommit.getFileChanges().get(filePath)) {
+            Change.LineShiftPointer lineShiftPointer = change.getLineShiftPointer();
+            String replacementString = change.getReplacementString();
+
+            linedText[lineShiftPointer.getOldLineIndex()] = replacementString;
+        }
+
+        return String.join("\n", linedText);
     }
 }

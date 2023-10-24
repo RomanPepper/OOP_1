@@ -1,9 +1,10 @@
 package pertsev.VCS.FileHandlers;
 
+import pertsev.VCS.Commit.Change;
+
 import java.util.Comparator;
 import java.util.List;
 
-//СЮДА НЕ СМОТРИТЕ ВООБЩЕ, ЭТО СТАРЮЧИЙ ОКОЛОРУДИМЕНТ, который я дальше буду рефакторить
 public class FileComparator implements Comparator<List<String>> {
     @Override
     public int compare(List<String> oldFileRows, List<String> newFileRows) {
@@ -11,16 +12,5 @@ public class FileComparator implements Comparator<List<String>> {
         return 0;
     }
 
-    public String getDiff(List<String> oldFileRows, List<String> newFileRows) {
-
-        for (int i = 0; i < Math.max(oldFileRows.size(), newFileRows.size()); i++) {
-
-        }
-    }
-
-    //1 diff - один стринг = одно сравнение одного файла
-
-    public List<String> getDiffList() {
-
-    }
+    public List<Change>
 }
