@@ -38,10 +38,10 @@ public class CommitCollector {
     private String updateFileTextToNextCommit(String textToUpdate, Commit nextCommit, Path filePath) {
         String[] linedText = textToUpdate.split("\n");
         for (Change change : nextCommit.getFileChanges().get(filePath)) {
-            Change.LineShiftPointer lineShiftPointer = change.getLineShiftPointer();
+            int lineIndex = change.getLineIndex();
             String replacementString = change.getReplacementString();
 
-            linedText[lineShiftPointer.getOldLineIndex()] = replacementString;
+            linedText[lineIndex] = replacementString;
         }
 
         return String.join("\n", linedText);

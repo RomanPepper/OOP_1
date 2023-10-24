@@ -33,18 +33,15 @@ public class CommitLogFileParser {
 
                 for (int i = 1; i < changeSetLines.length; i++) {
                     Change change;
-                    Change.LineShiftPointer lineShiftPointer;
+                    int lineIndex;
                     String portableString;
 
-                    String[] coordinatesAndString = changeSetLines[i].split("\\|");
+                    String[] lineIndexAndString = changeSetLines[i].split("\\|");
 
-                    int oldCoordinate = Integer.parseInt(coordinatesAndString[0].split(",")[0]);
-                    int newCoordinate = Integer.parseInt(coordinatesAndString[0].split(",")[1]);
+                    lineIndex = Integer.parseInt(lineIndexAndString[0]);
+                    portableString = lineIndexAndString[1];
 
-                    lineShiftPointer = new Change.LineShiftPointer(oldCoordinate, newCoordinate);
-                    portableString = coordinatesAndString[1];
-
-                    change = new Change(lineShiftPointer, portableString);
+                    change = new Change(lineIndex, portableString);
 
                     changes.add(change);
                 }
