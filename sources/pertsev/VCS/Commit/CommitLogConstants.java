@@ -10,5 +10,6 @@ class CommitLogConstants {
     protected static final String FILE_STRUCTURE_SEPARATOR = "---FILE_STRUCTURE_END---";
     protected static final String CHANGE_SET_SEPARATOR = "---CHANGESET_END---";
     protected static final String DELETED_FILE_MARKER = "-/FILE_HAS_BEEN_DELETED/-";
+    protected static final String CREATED_FILE_MARKER = "-/FILE_HAS_BEEN_CREATED/-";
     protected static final String LINE_INDEX_AND_STRING_SEPARATOR = "-|/|-";
 }
