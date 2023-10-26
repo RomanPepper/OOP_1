@@ -85,8 +85,4 @@ public class CommitLogFileParser {
     private boolean isDeleteFileChange(String changeString) {
         return changeString.trim().equals(CommitLogConstants.DELETED_FILE_MARKER);
     }
-
-    private boolean isCreateFileChange(String changeString) {
-        return changeString.trim().equals(CommitLogConstants.DELETED_FILE_MARKER);
-    }
 }

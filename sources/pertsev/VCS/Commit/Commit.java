@@ -13,13 +13,13 @@ public class Commit {
     //Список всех файлов и директорий в репозитории на момент утверждения коммита
     private final String[] files;
 
+    private final Map<Path, List<Change>> fileChanges;
+
     public Commit(String name, String[] files, Map<Path, List<Change>> fileChanges) {
         this.name = name;
         this.files = files;
         this.fileChanges = fileChanges;
     }
-
-    private final Map<Path, List<Change>> fileChanges;
 
     public String[] getFiles() {
         return files;
