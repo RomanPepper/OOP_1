@@ -35,13 +35,7 @@ public class CommitLogFileWriter {
             //Запишем каждое изменение этого файла
             List<Change> changes = commit.getFileChanges().get(filePath);
             for (Change change : changes) {
-                if (change.getType() == Change.Type.DELETE) {
-                    stringBuilder.append(CommitLogConstants.DELETED_FILE_MARKER).append("\n");
-                } else {
-                    stringBuilder.append(change.getLineIndex())
-                            .append(CommitLogConstants.LINE_INDEX_AND_STRING_SEPARATOR)
-                            .append(change.getReplacementString()).append("\n");
-                }
+                stringBuilder.append(change.toStringValue());
             }
             //Изменения этого файла закончены, ставит разделитель и идем дальше
             stringBuilder.append(CommitLogConstants.CHANGE_SET_SEPARATOR).append("\n");

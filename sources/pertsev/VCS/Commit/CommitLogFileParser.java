@@ -45,12 +45,12 @@ public class CommitLogFileParser {
                 Path changeSetPath = Paths.get(changeSetLines[0].trim());
                 List<Change> changes = new ArrayList<>();
 
+                //Начинаем идти со второй строки, т.к. первая - путь к файлу
                 for (int i = 1; i < changeSetLines.length; i++) {
                     Change change;
                     int lineIndex;
                     String portableString;
 
-                    //Если текущая операция - изменение текста файла, а не удаление, то...
                     if (isEditFileChange(changeSetLines[i])) {
                         String[] lineIndexAndString = changeSetLines[i]
                                 .split(CommitLogConstants.LINE_INDEX_AND_STRING_SEPARATOR);
@@ -58,9 +58,11 @@ public class CommitLogFileParser {
                         lineIndex = Integer.parseInt(lineIndexAndString[0]);
                         portableString = lineIndexAndString[1];
 
-                        change = new Change(Change.Type.TEXT_EDIT, lineIndex, portableString);
-                    } else { //Если удаление, то...
-                        change = new Change(Change.Type.DELETE, 0, null);
+                        change = new ChangeEdit(lineIndex, portableString);
+                    } else if (isDeleteFileChange(changeSetLines[i])) { //Если удаление, то...
+                        change = new ChangeDelete();
+                    } else { //Если создание, то...
+                        change = new ChangeCreate();
                     }
 
                     changes.add(change);
@@ -78,5 +80,13 @@ public class CommitLogFileParser {
 
     private boolean isEditFileChange(String changeString) {
         return changeString.split(CommitLogConstants.LINE_INDEX_AND_STRING_SEPARATOR).length == 2;
+    }
+
+    private boolean isDeleteFileChange(String changeString) {
+        return changeString.trim().equals(CommitLogConstants.DELETED_FILE_MARKER);
+    }
+
+    private boolean isCreateFileChange(String changeString) {
+        return changeString.trim().equals(CommitLogConstants.DELETED_FILE_MARKER);
     }
 }
