@@ -1,5 +1,7 @@
 package pertsev.VCS.Commit;
 
+import pertsev.VCS.File.FileState;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -11,17 +13,17 @@ public class Commit {
     private final String name;
 
     //Список всех файлов и директорий в репозитории на момент утверждения коммита
-    private final String[] files;
+    private final Path[] files;
 
     private final Map<Path, List<Change>> fileChanges;
 
-    public Commit(String name, String[] files, Map<Path, List<Change>> fileChanges) {
+    public Commit(String name, Path[] files, Map<Path, List<Change>> fileChanges) {
         this.name = name;
         this.files = files;
         this.fileChanges = fileChanges;
     }
 
-    public String[] getFiles() {
+    public Path[] getFiles() {
         return files;
     }
 

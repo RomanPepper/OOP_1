@@ -1,6 +1,10 @@
 package pertsev.VCS.Commit;
 
-import java.nio.file.Path;
+import pertsev.VCS.File.FileState;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChangeEdit implements Change {
     private final int lineIndex;
@@ -12,13 +16,24 @@ public class ChangeEdit implements Change {
     }
 
     @Override
-    public FileValueWrapper apply(String[] linedText, Path path) {
-        linedText[lineIndex] = replacementString;
-        return new EditedFileValueWrapper(String.join("\n", linedText));
+    public void apply(FileState file) {
+        if (!file.isExist()) throw new RuntimeException();
+        //Строка может быть как изменена (существующая), так и добавлена
+        List<String> text = new ArrayList<>(Arrays
+                .asList(file.getValue().split("\n")));
+        if (lineIndex < text.size()) { //Изменение
+            text.set(lineIndex, replacementString);
+        } else {
+            //Если добавлена строка, отличающаяся более чем на 1 индекс
+            if (Math.abs(lineIndex - (text.size() - 1)) > 1)
+                throw new IllegalArgumentException();
+            text.add(replacementString);
+        }
+        file.setValue(String.join("\n", text));
     }
 
     @Override
     public String toStringValue() {
-        return lineIndex + CommitLogConstants.LINE_INDEX_AND_STRING_SEPARATOR + replacementString;
+        return lineIndex + CommitLogConstants.INDEX_AND_STRING_LINE_SEPARATOR + replacementString;
     }
 }

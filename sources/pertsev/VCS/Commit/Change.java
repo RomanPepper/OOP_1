@@ -1,9 +1,9 @@
 package pertsev.VCS.Commit;
 
-import java.nio.file.Path;
+import pertsev.VCS.File.FileState;
 
 public interface Change {
-    public FileValueWrapper apply(String[] linedText, Path path);
+    public void apply(FileState file);
 
     public String toStringValue();
 }

@@ -1,11 +1,12 @@
 package pertsev.VCS.Commit;
 
-import java.nio.file.Path;
+import pertsev.VCS.File.FileState;
 
 public class ChangeDelete implements Change {
     @Override
-    public FileValueWrapper apply(String[] linedText, Path path) {
-        return new DeletedFileValueWrapper();
+    public void apply(FileState file) {
+        file.setExist(false);
+        file.setValue(null);
     }
 
     @Override

@@ -1,56 +1,76 @@
 package pertsev.VCS;
 
+import pertsev.VCS.Commit.Commit;
 import pertsev.VCS.Console.ConsoleManager;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.Queue;
+import java.util.Stack;
 
 public class Controller {
-    private enum APP_STATE {
+    private enum AppState {
         RUNNING, STOPPED
     }
 
-    private static final String PROJECT_DIR = System.getProperty("user.dir");
-    private static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
-    private static final String COMMAND_SEPARATOR = "\n --------------------------------";
+    private static final String COMMAND_SEPARATOR = "--------------------------------";
+    private static final String COMMIT_QUEUE_IS_EMPTY_MESSAGE = "Commit queue is empty";
     private ConsoleManager consoleManager;
     private Repository repository;
-
-    private APP_STATE appState;
+    private AppState appState;
 
     public Controller(Repository repository, ConsoleManager consoleManager) {
         this.repository = repository;
         this.consoleManager = consoleManager;
     }
 
-    protected void start() throws FileNotFoundException {
-        this.appState = APP_STATE.RUNNING;
-        while (this.appState == APP_STATE.RUNNING) {
+    protected void start() throws IOException {
+        this.appState = AppState.RUNNING;
+        while (this.appState == AppState.RUNNING) {
             String[] command = consoleManager.getCommand();
             this.command(command);
         }
     }
 
-    public void command(String[] command) throws FileNotFoundException {
-//        switch (command[0]) {
-//            case "status":
-//                return fileTracker.status() + COMMAND_SEPARATOR;
-//            case "log":
-//                return readLogFile();
-//            default:
-//                return '"' + command[0] + '"' + " is not a command";
-//        }
+    public void command(String[] command) throws IOException {
+        switch (command[0]) {
+            case "log":
+                System.out.println(
+                        beautifyCommitLog(repository.getCommitQueue())
+                );
+                System.out.println(COMMAND_SEPARATOR);
+                break;
+            case "commit":
+                this.repository.commit(command[1]);
+                break;
+            case "rollback":
+//                ...
+            case "stop":
+                this.appState = AppState.STOPPED;
+                break;
+            default:
+                System.out.println('"' + command[0] + '"' + " is not a command");
+        }
     }
 
-    private String readLogFile() throws FileNotFoundException {
-        Scanner scanner = new Scanner(new FileReader(COMMITS_FILE.toFile()));
-        StringBuilder stringBuilder = new StringBuilder();
+    private String beautifyCommitLog(Queue<Commit> commitQueue) {
+        if (commitQueue.isEmpty()) return COMMIT_QUEUE_IS_EMPTY_MESSAGE;
 
-        while (scanner.hasNextLine()) {
-            stringBuilder.append(scanner.nextLine()).append("\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Commit queue: ").append("\n");
+
+        Stack<Commit> stack = new Stack<>();
+
+        int i = 1;
+        while (!commitQueue.isEmpty()) {
+            Commit commit = commitQueue.poll();
+            stack.add(commit);
+            stringBuilder.append(i).append(". ")
+                    .append(commit.getName()).append("\n");
+            i++;
+        }
+
+        while (!stack.isEmpty()) {
+            commitQueue.add(stack.pop());
         }
 
         return stringBuilder.toString();

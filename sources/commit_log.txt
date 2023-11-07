@@ -1,0 +1,64 @@
+first_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|-bebra amogus-/-\|/\|-/>>---CHANGESET_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|-oh  wowwwww
+aleeeg man
+goooll-/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
+second_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+<</-\|/\|-/-1-\\\|\/\\\|-irishka "chekee-pekee"-/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
+3rd_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|--/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
+4th_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_DELETED/-
+-/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
+5th_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+<</-\|/\|-/-1-\\\|\/\\\|-alNIIGGGERRReeg man-/-\|/\|-/>><</-\|/\|-/-3-\\\|\/\\\|-LEGO MAAAAN????-/-\|/\|-/>>---CHANGESET_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|-lego man
+never gonna give you up
+never gonna let you down-/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
+6th_commit
+D:\vsu\3rd_semester\oop\OOP_1\resources\amogus.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\my_name_is_thomas_shelby.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\optimum_primeee.txt
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+---FILE_STRUCTURE_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\bebra.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_DELETED/-
+-/-\|/\|-/>>---CHANGESET_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\my_name_is_thomas_shelby.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|-my name is thomas shelby
+i am spider man
+my name is patrick BATEMAN...-/-\|/\|-/>>---CHANGESET_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\text.txt
+<</-\|/\|-/-4-\\\|\/\\\|-mangooooollll-/-\|/\|-/>><</-\|/\|-/-5-\\\|\/\\\|--/-\|/\|-/>><</-\|/\|-/-6-\\\|\/\\\|--/-\|/\|-/>><</-\|/\|-/-7-\\\|\/\\\|-semiyah... net nichego wajnee semyi-/-\|/\|-/>>---CHANGESET_END---
+D:\vsu\3rd_semester\oop\OOP_1\resources\optimum_primeee.txt
+<</-\|/\|-/--/FILE_HAS_BEEN_CREATED/--/-\|/\|-/>><</-\|/\|-/-0-\\\|\/\\\|--/-\|/\|-/>>---CHANGESET_END---
+------COMMIT_END------
