@@ -43,7 +43,8 @@ public class Controller {
                 this.repository.commit(command[1]);
                 break;
             case "rollback":
-//                ...
+                this.repository.rollbackTo(command[1]);
+                break;
             case "stop":
                 this.appState = AppState.STOPPED;
                 break;
@@ -65,7 +66,7 @@ public class Controller {
             Commit commit = commitQueue.poll();
             stack.add(commit);
             stringBuilder.append(i).append(". ")
-                    .append(commit.getName()).append("\n");
+                    .append(commit.name()).append("\n");
             i++;
         }
 

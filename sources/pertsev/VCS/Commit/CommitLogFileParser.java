@@ -54,7 +54,8 @@ public class CommitLogFileParser {
                     if (isEditFileChange(changeSetLines[i])) {
                         String[] lineIndexAndString = changeSetLines[i]
                                 .split(CommitLogConstants.INDEX_AND_STRING_LINE_SEPARATOR_REGEX);
-
+                        if (lineIndexAndString.length == 1)
+                            lineIndexAndString = new String[]{lineIndexAndString[0], ""};
                         lineIndex = Integer.parseInt(lineIndexAndString[0]);
                         portableString = lineIndexAndString[1];
 
@@ -79,7 +80,7 @@ public class CommitLogFileParser {
     }
 
     private boolean isEditFileChange(String changeString) {
-        return changeString.split(CommitLogConstants.INDEX_AND_STRING_LINE_SEPARATOR_REGEX).length == 2;
+        return changeString.contains(CommitLogConstants.INDEX_AND_STRING_LINE_SEPARATOR);
     }
 
     private boolean isDeleteFileChange(String changeString) {

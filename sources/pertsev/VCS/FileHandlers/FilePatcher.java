@@ -1,37 +1,46 @@
 package pertsev.VCS.FileHandlers;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
+import java.nio.file.Paths;
+import java.util.Stack;
 
 public class FilePatcher {
-    private static class FilePatcherVisitor extends SimpleFileVisitor<Path> {
-        List<Path> patchList;
-
-        public FilePatcherVisitor(List<Path> patchList) {
-            this.patchList = patchList;
-        }
-
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-
-
-            return FileVisitResult.CONTINUE;
-        }
-    }
-
-    private Path directory;
+    Path directory;
 
     public FilePatcher(Path directory) {
-        this.directory = directory;
     }
 
-    public void patch(List<Path> fileList) throws IOException {
-        FilePatcherVisitor filePatcherVisitor = new FilePatcherVisitor(fileList);
-        Files.walkFileTree(directory, filePatcherVisitor);
+    public void patch(Path filepath, String newValue) throws IOException {
+        if (!filepath.startsWith(directory)) throw new IllegalArgumentException();
+        FileWriter fileWriter = new FileWriter(filepath.toFile(), false);
+
+        fileWriter.write(newValue);
+        fileWriter.close();
+    }
+
+    public void create(Path filepath, String value) throws IOException {
+        if (!filepath.startsWith(directory)) throw new IllegalArgumentException();
+
+        //Если между resources и нужным файлом есть несозданные директории, создадим их:
+        Stack<Path> directoriesToCreate = new Stack<>();
+
+        //Будем создавать список на создание необходимых директорий
+        Path copy = Paths.get(filepath.toUri());
+        while (!copy.toFile().exists()) {
+            Path newCopyValue = copy.subpath(0, copy.getNameCount() - 1)
+                    .getFileName().toAbsolutePath();
+            directoriesToCreate.push(newCopyValue);
+            copy = newCopyValue;
+        }
+
+        while (!directoriesToCreate.isEmpty()) {
+            Files.createDirectory(directoriesToCreate.pop());
+        }
+
+        //Теперь можно создавать и сам файл
+        Files.write(filepath, value.getBytes());
     }
 }

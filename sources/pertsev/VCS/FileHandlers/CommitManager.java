@@ -34,7 +34,7 @@ public class CommitManager {
         private List<Path> files = new ArrayList<>();
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
             files.add(file);
 
             return FileVisitResult.CONTINUE;
@@ -45,61 +45,123 @@ public class CommitManager {
         }
     }
 
+    public void rollbackTo(String commitName) throws IOException {
+        if (commitQueue.isEmpty()) return;
+
+        while (!getLastCommit().name().equals(commitName)) {
+            rollbackLastCommit();
+        }
+    }
+
+    private void rollbackLastCommit() throws IOException {
+        //Крайний случай
+        if (commitQueue.isEmpty()) return;
+
+        //Чтобы откатить последний коммит, нужно привести репозиторий к виду коммита, предшествующего последнему
+        Commit penultCommit = getPenultCommit();
+
+        //Все существующие на момент предпоследнего коммита файлы
+        Path[] files = penultCommit.files();
+        if (files == null) return;
+
+        List<FileState> newFiles = new ArrayList<>();
+        for (Path file : files) {
+            newFiles.add(collector.collect(penultCommit.name(), file));
+        }
+
+        //Приведем репозиторий к состоянию предпоследнего коммита
+        for (FileState fileState : newFiles) {
+            Path filePath = fileState.getPath();
+            //Если такой файл уже есть
+            if (filePath.toFile().exists()) {
+                //Перезаписать значение на актуальное
+                filePatcher.patch(filePath, fileState.getValue());
+            } else {//Если такого файла нет, то
+                //Создаем файл с таким значением
+                filePatcher.create(filePath, fileState.getValue());
+            }
+        }
+
+        //Репозиторий обновлен, теперь обновим лог-файл
+        commitLogFileWriter.pullCommit();
+    }
+
     // Фиксируем изменения в новый коммит
     public void commit(String commitName) throws IOException {
         Commit lastCommit = getLastCommit();
+        List<Path> currFiles;
+
         FileTrackerVisitor fileTrackerVisitor = new FileTrackerVisitor();
         Files.walkFileTree(resourcesDirectory, fileTrackerVisitor);
-        Path[] currFiles = fileTrackerVisitor.getFiles().toArray(new Path[0]);
-        Map<Path, List<Change>> map = new HashMap<>();
+        currFiles = fileTrackerVisitor.getFiles();
+
+        Map<Path, List<Change>> changes = new HashMap<>();
 
         //Если коммитов ещё не было
         if (lastCommit == null) {
             for (Path file : currFiles) {
                 FileState oldFile = new FileState(file, false, null);
                 FileState newFile = new FileState(file, true, readFileValue(file));
-                map.put(file, comparator.getDiffs(oldFile, newFile));
+                changes.put(file, comparator.getDiffs(oldFile, newFile));
             }
-            commitLogFileWriter.putCommit(new Commit(commitName, currFiles, map));
+            commitLogFileWriter.putCommit(new Commit(commitName, currFiles.toArray(new Path[0]), changes));
             return;
         }
-        Path[] oldFiles = lastCommit.getFiles();
+        List<Path> oldFiles = new ArrayList<>(Arrays.asList(lastCommit.files()));
 
         //Рассмотрим случаи изменения и удаления
-        for (Path file : oldFiles) {
-            FileState oldFile = collector.collect(lastCommit.getName(), file);
-            boolean isFounded = false;
-            for (Path currFile : currFiles) {
-                if (file.equals(currFile)) {
-                    isFounded = true;
-                    FileState newFile = new FileState(currFile, true,
-                            readFileValue(currFile));
-                    List<Change> changes = comparator.getDiffs(oldFile, newFile);
-                    if (!changes.isEmpty()) {
-                        map.put(currFile, changes);
-                    }
-                    break;
+        for (Path oldFilePath : oldFiles) {
+            FileState oldFile = collector.collect(lastCommit.name(), oldFilePath);
+            if (currFiles.contains(oldFilePath)) {
+                FileState newFile = new FileState(oldFilePath, true,
+                        readFileValue(oldFilePath));
+                List<Change> changeList = comparator.getDiffs(oldFile, newFile);
+                if (!changeList.isEmpty()) {
+                    changes.put(oldFilePath, changeList);
                 }
-            }
-            if (!isFounded) {
-                FileState newFile = new FileState(file, false, null);
-                map.put(file, comparator.getDiffs(oldFile, newFile));
+            } else {
+                FileState newFile = new FileState(oldFilePath, false, null);
+                changes.put(oldFilePath, comparator.getDiffs(oldFile, newFile));
             }
         }
 
-        //Рассмотрим случай добавления
+//        //Рассмотрим случай добавления
         for (Path currFile : currFiles) {
-            if (!map.containsKey(currFile)) {
+            if (!changes.containsKey(currFile)) {
                 FileState newFile = new FileState(currFile, true, readFileValue(currFile));
                 if (!Arrays.asList(oldFiles).contains(currFile)) {
                     FileState oldFile = new FileState(currFile, false, null);
-                    map.put(currFile, comparator.getDiffs(oldFile, newFile));
+                    changes.put(currFile, comparator.getDiffs(oldFile, newFile));
                 }
             }
         }
 
-        Commit newCommit = new Commit(commitName, currFiles, map);
+        Commit newCommit = new Commit(commitName, currFiles.toArray(new Path[0]), changes);
         commitLogFileWriter.putCommit(newCommit);
+    }
+
+    private Commit getPenultCommit() {
+        if (commitQueue.size() <= 1) return null;
+        Stack<Commit> stack = new Stack<>();
+        Commit penultCommit;
+
+        //Доходим до предпоследнего коммита
+        while (commitQueue.size() > 2) {
+            stack.add(commitQueue.poll());
+        }
+        //Запоминаем его
+        penultCommit = commitQueue.peek();
+
+        //Добавляем в стек оставшиеся коммиты
+        stack.add(commitQueue.poll());
+        stack.add(commitQueue.poll());
+
+        //Переливаем всё из стека обратно в очередь
+        while (!stack.isEmpty()) {
+            commitQueue.add(stack.pop());
+        }
+
+        return penultCommit;
     }
 
     private Commit getLastCommit() {

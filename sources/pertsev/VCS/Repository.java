@@ -31,4 +31,9 @@ public class Repository {
         //После осуществления коммита перезапишем значение очереди на актуальное
         commitQueue = commitLogFileParser.readCommitQueue();
     }
+
+    public void rollbackTo(String commitName) throws IOException {
+        commitManager.rollbackTo(commitName);
+        commitQueue = commitLogFileParser.readCommitQueue();
+    }
 }
