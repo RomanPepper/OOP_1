@@ -1,5 +1,6 @@
 .idea
 out
 sources/pertsev/test
+resources
 *.iml
 lib
