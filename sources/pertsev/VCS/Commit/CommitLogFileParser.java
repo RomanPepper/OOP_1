@@ -13,9 +13,9 @@ public class CommitLogFileParser {
         this.commitLogFile = commitLofFile;
     }
 
-    public Queue<Commit> readCommitQueue() throws IOException {
+    public CommitQueue readCommitQueue() throws IOException {
         String fileText = String.join("\n", Files.readAllLines(commitLogFile));
-        Queue<Commit> commits = new LinkedList<>();
+        CommitQueue commits = new CommitQueue();
 
         if (fileText.isEmpty()) return commits;
 
@@ -54,8 +54,10 @@ public class CommitLogFileParser {
                     if (isEditFileChange(changeSetLines[i])) {
                         String[] lineIndexAndString = changeSetLines[i]
                                 .split(CommitLogConstants.INDEX_AND_STRING_LINE_SEPARATOR_REGEX);
+
                         if (lineIndexAndString.length == 1)
                             lineIndexAndString = new String[]{lineIndexAndString[0], ""};
+
                         lineIndex = Integer.parseInt(lineIndexAndString[0]);
                         portableString = lineIndexAndString[1];
 

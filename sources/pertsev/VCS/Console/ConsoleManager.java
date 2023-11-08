@@ -10,8 +10,4 @@ public class ConsoleManager {
         System.out.print(COMMAND_ANNOTATION);
         return scanner.nextLine().split("\\s");
     }
-
-    public void printResponse(String response) {
-        System.out.println(response);
-    }
 }

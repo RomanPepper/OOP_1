@@ -10,10 +10,6 @@ public class VersionControlSystem {
     private static final String PROJECT_DIR = System.getProperty("user.dir");
     private static final Path DEFAULT_REPOSITORY_DIRECTORY = Paths.get(PROJECT_DIR + "/resources");
 
-    private enum State {
-        RUNNING, STOPPED
-    }
-
     private ConsoleManager consoleManager = new ConsoleManager();
     private Repository repository;
     private Controller controller;

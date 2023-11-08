@@ -11,6 +11,6 @@ public class ChangeDelete implements Change {
 
     @Override
     public String toStringValue() {
-        return CommitLogConstants.DELETED_FILE_MARKER + "\n";
+        return CommitLogConstants.DELETED_FILE_MARKER;
     }
 }

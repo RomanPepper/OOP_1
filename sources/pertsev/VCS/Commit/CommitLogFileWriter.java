@@ -55,7 +55,8 @@ public class CommitLogFileWriter {
 
         String[] commitTextsArray = fileText.split(CommitLogConstants.COMMIT_SEPARATOR);
         String textWithoutLastCommit = String.join(CommitLogConstants.COMMIT_SEPARATOR,
-                Arrays.copyOfRange(commitTextsArray, 0, commitTextsArray.length - 1));
+                Arrays.copyOfRange(commitTextsArray, 0, commitTextsArray.length - 1))
+                + CommitLogConstants.COMMIT_SEPARATOR;
 
         FileWriter fileWriter = new FileWriter(commitLogFile.toFile(), false);
         fileWriter.write(textWithoutLastCommit);

@@ -2,6 +2,8 @@ package pertsev.VCS;
 
 import pertsev.VCS.Commit.Commit;
 import pertsev.VCS.Commit.CommitLogFileParser;
+import pertsev.VCS.Commit.CommitQueue;
+import pertsev.VCS.Commit.CommitQueueController;
 import pertsev.VCS.FileHandlers.CommitManager;
 
 import java.io.IOException;
@@ -13,12 +15,18 @@ public class Repository {
     public static final String PROJECT_DIR = System.getProperty("user.dir");
     public static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
     private CommitLogFileParser commitLogFileParser = new CommitLogFileParser(COMMITS_FILE);
-    private Queue<Commit> commitQueue = commitLogFileParser.readCommitQueue();
+    private CommitQueue commitQueue = new CommitQueue();
+    private CommitQueueController commitQueueController = new CommitQueueController(commitQueue, commitLogFileParser);
+
+    {
+        commitQueueController.reread();
+    }
 
     private CommitManager commitManager;
 
     public Repository(Path repoPath) throws IOException {
-        commitManager = new CommitManager(repoPath, COMMITS_FILE, commitQueue);
+        commitManager = new CommitManager(repoPath, COMMITS_FILE,
+                commitQueue, commitQueueController);
     }
 
     public Queue<Commit> getCommitQueue() {
@@ -27,13 +35,9 @@ public class Repository {
 
     public void commit(String commitName) throws IOException {
         commitManager.commit(commitName);
-
-        //После осуществления коммита перезапишем значение очереди на актуальное
-        commitQueue = commitLogFileParser.readCommitQueue();
     }
 
     public void rollbackTo(String commitName) throws IOException {
         commitManager.rollbackTo(commitName);
-        commitQueue = commitLogFileParser.readCommitQueue();
     }
 }

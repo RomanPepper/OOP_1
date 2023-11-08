@@ -1,9 +1,6 @@
 package pertsev.VCS.FileHandlers;
 
-import pertsev.VCS.Commit.Change;
-import pertsev.VCS.Commit.Commit;
-import pertsev.VCS.Commit.CommitCollector;
-import pertsev.VCS.Commit.CommitLogFileWriter;
+import pertsev.VCS.Commit.*;
 import pertsev.VCS.File.FileState;
 
 import java.io.IOException;
@@ -16,15 +13,18 @@ import java.util.*;
 
 public class CommitManager {
     private FileTextComparator comparator = new FileTextComparator();
-    private Queue<Commit> commitQueue;
+    private CommitQueue commitQueue;
+    private CommitQueueController commitQueueController;
     private CommitCollector collector;
     private CommitLogFileWriter commitLogFileWriter;
     private FilePatcher filePatcher;
     private Path resourcesDirectory;
 
-    public CommitManager(Path directory, Path commitLogFile, Queue<Commit> commitQueue) {
+    public CommitManager(Path directory, Path commitLogFile,
+                         CommitQueue commitQueue, CommitQueueController commitQueueController) {
         this.resourcesDirectory = directory;
         this.commitQueue = commitQueue;
+        this.commitQueueController = commitQueueController;
         this.commitLogFileWriter = new CommitLogFileWriter(commitLogFile);
         this.filePatcher = new FilePatcher(directory);
         this.collector = new CommitCollector(commitQueue);
@@ -48,7 +48,7 @@ public class CommitManager {
     public void rollbackTo(String commitName) throws IOException {
         if (commitQueue.isEmpty()) return;
 
-        while (!getLastCommit().name().equals(commitName)) {
+        while (!commitQueue.getLastCommit().name().equals(commitName)) {
             rollbackLastCommit();
         }
     }
@@ -58,22 +58,23 @@ public class CommitManager {
         if (commitQueue.isEmpty()) return;
 
         //Чтобы откатить последний коммит, нужно привести репозиторий к виду коммита, предшествующего последнему
-        Commit penultCommit = getPenultCommit();
+        Commit penultCommit = commitQueue.getPenultCommit();
 
         //Все существующие на момент предпоследнего коммита файлы
-        Path[] files = penultCommit.files();
-        if (files == null) return;
+        Path[] oldFiles = penultCommit.files();
+        if (oldFiles == null) return;
 
         List<FileState> newFiles = new ArrayList<>();
-        for (Path file : files) {
+        for (Path file : oldFiles) {
             newFiles.add(collector.collect(penultCommit.name(), file));
         }
 
-        //Приведем репозиторий к состоянию предпоследнего коммита
+        // ----Приведем репозиторий к состоянию предпоследнего коммита
+        // --Отредактируем и создадим новые файлы
         for (FileState fileState : newFiles) {
             Path filePath = fileState.getPath();
             //Если такой файл уже есть
-            if (filePath.toFile().exists()) {
+            if (Files.exists(filePath)) {
                 //Перезаписать значение на актуальное
                 filePatcher.patch(filePath, fileState.getValue());
             } else {//Если такого файла нет, то
@@ -82,13 +83,28 @@ public class CommitManager {
             }
         }
 
-        //Репозиторий обновлен, теперь обновим лог-файл
+        // --Удалим ненужные файлы
+        List<Path> currFiles;
+        FileTrackerVisitor fileTrackerVisitor = new FileTrackerVisitor();
+        Files.walkFileTree(resourcesDirectory, fileTrackerVisitor);
+        currFiles = fileTrackerVisitor.getFiles();
+        List<Path> oldFilesList = List.of(oldFiles);
+
+        for (Path currFile : currFiles) {
+            // Если файл не предусмотрен в репозитории, но существует
+            if (!oldFilesList.contains(currFile)) {
+                Files.deleteIfExists(currFile);
+            }
+        }
+
+        // Репозиторий обновлен, теперь обновим лог-файл и commitQueue
         commitLogFileWriter.pullCommit();
+        commitQueueController.reread();
     }
 
     // Фиксируем изменения в новый коммит
     public void commit(String commitName) throws IOException {
-        Commit lastCommit = getLastCommit();
+        Commit lastCommit = commitQueue.getLastCommit();
         List<Path> currFiles;
 
         FileTrackerVisitor fileTrackerVisitor = new FileTrackerVisitor();
@@ -125,11 +141,11 @@ public class CommitManager {
             }
         }
 
-//        //Рассмотрим случай добавления
+        //Рассмотрим случай добавления
         for (Path currFile : currFiles) {
             if (!changes.containsKey(currFile)) {
                 FileState newFile = new FileState(currFile, true, readFileValue(currFile));
-                if (!Arrays.asList(oldFiles).contains(currFile)) {
+                if (oldFiles.contains(currFile)) {
                     FileState oldFile = new FileState(currFile, false, null);
                     changes.put(currFile, comparator.getDiffs(oldFile, newFile));
                 }
@@ -138,47 +154,7 @@ public class CommitManager {
 
         Commit newCommit = new Commit(commitName, currFiles.toArray(new Path[0]), changes);
         commitLogFileWriter.putCommit(newCommit);
-    }
-
-    private Commit getPenultCommit() {
-        if (commitQueue.size() <= 1) return null;
-        Stack<Commit> stack = new Stack<>();
-        Commit penultCommit;
-
-        //Доходим до предпоследнего коммита
-        while (commitQueue.size() > 2) {
-            stack.add(commitQueue.poll());
-        }
-        //Запоминаем его
-        penultCommit = commitQueue.peek();
-
-        //Добавляем в стек оставшиеся коммиты
-        stack.add(commitQueue.poll());
-        stack.add(commitQueue.poll());
-
-        //Переливаем всё из стека обратно в очередь
-        while (!stack.isEmpty()) {
-            commitQueue.add(stack.pop());
-        }
-
-        return penultCommit;
-    }
-
-    private Commit getLastCommit() {
-        if (commitQueue.isEmpty()) return null;
-        Stack<Commit> stack = new Stack<>();
-        Commit lastCommit;
-
-        while (!commitQueue.isEmpty()) {
-            stack.add(commitQueue.poll());
-        }
-        lastCommit = stack.peek();
-
-        while (!stack.isEmpty()) {
-            commitQueue.add(stack.pop());
-        }
-
-        return lastCommit;
+        commitQueueController.reread();
     }
 
     private String readFileValue(Path path) throws IOException {

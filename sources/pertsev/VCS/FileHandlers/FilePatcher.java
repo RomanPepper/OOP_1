@@ -11,10 +11,12 @@ public class FilePatcher {
     Path directory;
 
     public FilePatcher(Path directory) {
+        this.directory = directory;
     }
 
     public void patch(Path filepath, String newValue) throws IOException {
         if (!filepath.startsWith(directory)) throw new IllegalArgumentException();
+        if (!Files.exists(filepath)) throw new IllegalArgumentException();
         FileWriter fileWriter = new FileWriter(filepath.toFile(), false);
 
         fileWriter.write(newValue);
@@ -23,17 +25,16 @@ public class FilePatcher {
 
     public void create(Path filepath, String value) throws IOException {
         if (!filepath.startsWith(directory)) throw new IllegalArgumentException();
+        if (Files.exists(filepath)) throw new IllegalArgumentException();
 
         //Если между resources и нужным файлом есть несозданные директории, создадим их:
         Stack<Path> directoriesToCreate = new Stack<>();
 
         //Будем создавать список на создание необходимых директорий
-        Path copy = Paths.get(filepath.toUri());
-        while (!copy.toFile().exists()) {
-            Path newCopyValue = copy.subpath(0, copy.getNameCount() - 1)
-                    .getFileName().toAbsolutePath();
-            directoriesToCreate.push(newCopyValue);
-            copy = newCopyValue;
+        Path parent = filepath.getParent();
+        while (!Files.exists(parent)) {
+            directoriesToCreate.push(parent);
+            parent = parent.getParent();
         }
 
         while (!directoriesToCreate.isEmpty()) {
