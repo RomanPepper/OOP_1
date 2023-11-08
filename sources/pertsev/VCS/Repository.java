@@ -7,13 +7,28 @@ import pertsev.VCS.Commit.CommitQueueController;
 import pertsev.VCS.FileHandlers.CommitManager;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Queue;
 
 public class Repository {
-    public static final String PROJECT_DIR = System.getProperty("user.dir");
-    public static final Path COMMITS_FILE = Paths.get(PROJECT_DIR + "/sources/commit_log.txt");
+    public static final Path COMMITS_FILE;
+
+    static {
+        Path path = Paths.get(
+                VersionControlSystem.PROJECT_DIR + "/sources/commit_log.txt"
+        );
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        COMMITS_FILE = path;
+    }
+
     private CommitLogFileParser commitLogFileParser = new CommitLogFileParser(COMMITS_FILE);
     private CommitQueue commitQueue = new CommitQueue();
     private CommitQueueController commitQueueController = new CommitQueueController(commitQueue, commitLogFileParser);

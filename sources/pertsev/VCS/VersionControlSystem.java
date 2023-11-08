@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class VersionControlSystem {
-    private static final String PROJECT_DIR = System.getProperty("user.dir");
+    public static final String PROJECT_DIR = System.getProperty("user.dir");
     private static final Path DEFAULT_REPOSITORY_DIRECTORY = Paths.get(PROJECT_DIR + "/resources");
 
     private ConsoleManager consoleManager = new ConsoleManager();
