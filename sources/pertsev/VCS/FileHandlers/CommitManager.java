@@ -45,7 +45,7 @@ public class CommitManager {
         }
     }
 
-    // Фиксируем изменения в новый коммит
+    //     Фиксируем изменения в новый коммит
     public void commit(String commitName) throws IOException {
         Commit lastCommit = getLastCommit();
         FileTrackerVisitor fileTrackerVisitor = new FileTrackerVisitor();
@@ -63,17 +63,16 @@ public class CommitManager {
             commitLogFileWriter.putCommit(new Commit(commitName, currFiles, map));
             return;
         }
-        Path[] oldFiles = lastCommit.getFiles();
+        Path[] oldFiles = lastCommit.files();
 
         //Рассмотрим случаи изменения и удаления
         for (Path file : oldFiles) {
-            FileState oldFile = collector.collect(lastCommit.getName(), file);
+            FileState oldFile = collector.collect(lastCommit.name(), file);
             boolean isFounded = false;
             for (Path currFile : currFiles) {
                 if (file.equals(currFile)) {
                     isFounded = true;
-                    FileState newFile = new FileState(currFile, true,
-                            readFileValue(currFile));
+                    FileState newFile = new FileState(currFile, true, readFileValue(currFile));
                     List<Change> changes = comparator.getDiffs(oldFile, newFile);
                     if (!changes.isEmpty()) {
                         map.put(currFile, changes);
@@ -104,17 +103,17 @@ public class CommitManager {
 
     private Commit getLastCommit() {
         if (commitQueue.isEmpty()) return null;
-        Stack<Commit> stack = new Stack<>();
-        Commit lastCommit;
+        Queue<Commit> buffer = new LinkedList<>();
+        Commit lastCommit = null;
 
         while (!commitQueue.isEmpty()) {
-            stack.add(commitQueue.poll());
+            if (commitQueue.size() == 1) {
+                lastCommit = commitQueue.peek();
+            }
+            buffer.add(commitQueue.poll());
         }
-        lastCommit = stack.peek();
 
-        while (!stack.isEmpty()) {
-            commitQueue.add(stack.pop());
-        }
+        while (!buffer.isEmpty()) commitQueue.add(buffer.poll());
 
         return lastCommit;
     }

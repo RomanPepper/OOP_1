@@ -25,7 +25,6 @@ public class FileTextComparator implements Comparator<FileState> {
         }
     }
 
-    //Условия могут
     public List<Change> getDiffs(FileState oldFile, FileState newFile) {
         if (!oldFile.getPath().equals(newFile.getPath())) throw new IllegalArgumentException();
 
@@ -44,8 +43,6 @@ public class FileTextComparator implements Comparator<FileState> {
 
             String[] oldTextLines = oldFile.getValue().split("\n");
             String[] newTextLines = newFile.getValue().split("\n");
-
-            //Меня интересует text.txt
 
             //Проверим совпадающую по длине часть
             for (int i = 0; i < Math.min(oldTextLines.length, newTextLines.length); i++) {

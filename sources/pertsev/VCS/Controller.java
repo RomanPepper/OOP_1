@@ -65,7 +65,7 @@ public class Controller {
             Commit commit = commitQueue.poll();
             stack.add(commit);
             stringBuilder.append(i).append(". ")
-                    .append(commit.getName()).append("\n");
+                    .append(commit.name()).append("\n");
             i++;
         }
 
