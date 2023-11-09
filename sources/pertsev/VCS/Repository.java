@@ -5,6 +5,7 @@ import pertsev.VCS.Commit.CommitLogFileParser;
 import pertsev.VCS.Commit.CommitQueue;
 import pertsev.VCS.Commit.CommitQueueController;
 import pertsev.VCS.FileHandlers.CommitManager;
+import pertsev.VCS.PathHandlers.PathHandler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.Queue;
 
 public class Repository {
-    public static final Path COMMITS_FILE;
+    private static final Path COMMITS_FILE;
 
     static {
         Path path = Paths.get(
@@ -29,7 +30,10 @@ public class Repository {
         COMMITS_FILE = path;
     }
 
-    private CommitLogFileParser commitLogFileParser = new CommitLogFileParser(COMMITS_FILE);
+    private PathHandler pathHandler = new PathHandler(
+            Paths.get(VersionControlSystem.PROJECT_DIR)
+    );
+    private CommitLogFileParser commitLogFileParser = new CommitLogFileParser(COMMITS_FILE, pathHandler);
     private CommitQueue commitQueue = new CommitQueue();
     private CommitQueueController commitQueueController = new CommitQueueController(commitQueue, commitLogFileParser);
 
@@ -41,7 +45,7 @@ public class Repository {
 
     public Repository(Path repoPath) throws IOException {
         commitManager = new CommitManager(repoPath, COMMITS_FILE,
-                commitQueue, commitQueueController);
+                commitQueue, commitQueueController, pathHandler);
     }
 
     public Queue<Commit> getCommitQueue() {

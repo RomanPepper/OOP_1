@@ -2,6 +2,7 @@ package pertsev.VCS.FileHandlers;
 
 import pertsev.VCS.Commit.*;
 import pertsev.VCS.File.FileState;
+import pertsev.VCS.PathHandlers.PathHandler;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommitManager {
     private FileTextComparator comparator = new FileTextComparator();
@@ -18,14 +20,17 @@ public class CommitManager {
     private CommitCollector collector;
     private CommitLogFileWriter commitLogFileWriter;
     private FilePatcher filePatcher;
+    private PathHandler pathHandler;
     private Path resourcesDirectory;
 
     public CommitManager(Path directory, Path commitLogFile,
-                         CommitQueue commitQueue, CommitQueueController commitQueueController) {
+                         CommitQueue commitQueue, CommitQueueController commitQueueController,
+                         PathHandler pathHandler) {
         this.resourcesDirectory = directory;
         this.commitQueue = commitQueue;
         this.commitQueueController = commitQueueController;
-        this.commitLogFileWriter = new CommitLogFileWriter(commitLogFile);
+        this.pathHandler = pathHandler;
+        this.commitLogFileWriter = new CommitLogFileWriter(commitLogFile, pathHandler);
         this.filePatcher = new FilePatcher(directory);
         this.collector = new CommitCollector(commitQueue);
     }
@@ -61,8 +66,9 @@ public class CommitManager {
         Commit penultCommit = commitQueue.getPenultCommit();
 
         //Все существующие на момент предпоследнего коммита файлы
-        Path[] oldFiles = penultCommit.files();
-        if (oldFiles == null) return;
+        Path[] oldFiles = Arrays.stream(penultCommit.files())
+                .map(pathHandler::unrelativizeOfProject)
+                .toList().toArray(new Path[0]);
 
         List<FileState> newFiles = new ArrayList<>();
         for (Path file : oldFiles) {
@@ -145,7 +151,7 @@ public class CommitManager {
         for (Path currFile : currFiles) {
             if (!changes.containsKey(currFile)) {
                 FileState newFile = new FileState(currFile, true, readFileValue(currFile));
-                if (oldFiles.contains(currFile)) {
+                if (!oldFiles.contains(currFile)) {
                     FileState oldFile = new FileState(currFile, false, null);
                     changes.put(currFile, comparator.getDiffs(oldFile, newFile));
                 }

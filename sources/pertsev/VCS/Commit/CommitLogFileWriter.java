@@ -1,5 +1,8 @@
 package pertsev.VCS.Commit;
 
+import pertsev.VCS.PathHandlers.PathHandler;
+import pertsev.VCS.VersionControlSystem;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,9 +12,11 @@ import java.util.List;
 
 public class CommitLogFileWriter {
     private Path commitLogFile;
+    private PathHandler pathHandler;
 
-    public CommitLogFileWriter(Path commitLogFile) {
+    public CommitLogFileWriter(Path commitLogFile, PathHandler pathHandler) {
         this.commitLogFile = commitLogFile;
+        this.pathHandler = pathHandler;
     }
 
     public void putCommit(Commit commit) throws IOException {
@@ -21,9 +26,9 @@ public class CommitLogFileWriter {
         stringBuilder.append(commit.name().trim()).append("\n");
 
         //Запишем файловую структуру на момент коммита
-        for (Path file : commit.files()) {
-            stringBuilder.append(file).append("\n");
-        }
+        for (Path file : commit.files())
+            stringBuilder.append(pathHandler.relativizeOfProject(file)).append("\n");
+
 
         //Разделитель
         stringBuilder.append(CommitLogConstants.FILE_STRUCTURE_SEPARATOR).append("\n");
@@ -31,7 +36,7 @@ public class CommitLogFileWriter {
         //Запишем изменения для всех файлов коммита:
         for (Path filePath : commit.fileChanges().keySet()) {
             //Пропишем путь к файлу
-            stringBuilder.append(filePath).append("\n");
+            stringBuilder.append(pathHandler.relativizeOfProject(filePath)).append("\n");
 
             //Запишем каждое изменение этого файла
             List<Change> changes = commit.fileChanges().get(filePath);

@@ -24,9 +24,6 @@ public class ChangeEdit implements Change {
         if (lineIndex < text.size()) { //Изменение
             text.set(lineIndex, replacementString);
         } else {
-            //Если добавлена строка, отличающаяся более чем на 1 индекс
-            if (Math.abs(lineIndex - (text.size() - 1)) > 1)
-                throw new IllegalArgumentException();
             text.add(replacementString);
         }
         file.setValue(String.join("\n", text));

@@ -1,5 +1,7 @@
 package pertsev.VCS.Commit;
 
+import pertsev.VCS.PathHandlers.PathHandler;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,14 +10,17 @@ import java.util.*;
 
 public class CommitLogFileParser {
     private Path commitLogFile;
+    private PathHandler pathHandler;
 
-    public CommitLogFileParser(Path commitLofFile) {
+    public CommitLogFileParser(Path commitLofFile, PathHandler pathHandler) {
         this.commitLogFile = commitLofFile;
+        this.pathHandler = pathHandler;
     }
 
     public CommitQueue readCommitQueue() throws IOException {
         String fileText = String.join("\n", Files.readAllLines(commitLogFile));
         CommitQueue commits = new CommitQueue();
+
 
         if (fileText.isEmpty()) return commits;
 
@@ -42,7 +47,7 @@ public class CommitLogFileParser {
             for (String changeSetText : changeSetsText) {
                 String[] changeSetLines = parseChangeSetRecords(changeSetText.trim());
 
-                Path changeSetPath = Paths.get(changeSetLines[0].trim());
+                Path changeSetPath = pathHandler.unrelativizeOfProject(Paths.get(changeSetLines[0].trim()));
                 List<Change> changes = new ArrayList<>();
 
                 //Начинаем идти со второй строки, т.к. первая - путь к файлу
@@ -125,7 +130,8 @@ public class CommitLogFileParser {
     private Path[] parseFileStructure(String[] lines) {
         List<Path> list = new ArrayList<>();
         for (String line : lines) {
-            list.add(Paths.get(line));
+            list.add(
+                    pathHandler.unrelativizeOfProject(Paths.get(line)));
         }
         return list.toArray(new Path[0]);
     }

@@ -1,6 +1,5 @@
 package pertsev.VCS.Commit;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -65,21 +64,19 @@ public class CommitQueue implements Queue<Commit> {
         return queue.contains(o);
     }
 
-    @Nonnull
+
     @Override
     public Iterator<Commit> iterator() {
         return queue.iterator();
     }
 
-    @Nonnull
     @Override
     public Object[] toArray() {
         return queue.toArray();
     }
 
-    @Nonnull
     @Override
-    public <T> T[] toArray(@Nonnull T[] a) {
+    public <T> T[] toArray(T[] a) {
         return queue.toArray(a);
     }
 
@@ -94,22 +91,22 @@ public class CommitQueue implements Queue<Commit> {
     }
 
     @Override
-    public boolean containsAll(@Nonnull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return queue.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@Nonnull Collection<? extends Commit> c) {
+    public boolean addAll(Collection<? extends Commit> c) {
         return queue.addAll(c);
     }
 
     @Override
-    public boolean removeAll(@Nonnull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return queue.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@Nonnull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return queue.retainAll(c);
     }
 
